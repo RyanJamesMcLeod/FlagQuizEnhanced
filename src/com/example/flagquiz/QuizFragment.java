@@ -47,6 +47,10 @@ public class QuizFragment extends Fragment {
 	   private Animation shakeAnimation; // animation for incorrect guess
 	   private int correctFirstGuesses;
 	   private int guessNumber;
+	   private int scoreAdd;
+	   private int totalScore;
+	   private double scoreMultiplier = 1.0;
+	   private double scoreMultiplierAdd;
 	   
 	   private TextView questionNumberTextView; // shows current question #
 	   private ImageView flagImageView; // displays a flag
@@ -92,7 +96,20 @@ public class QuizFragment extends Fragment {
 	            Button button = (Button) row.getChildAt(column);
 	            button.setOnClickListener(guessButtonListener);
 	         }
-	      }  
+	      }
+	      
+	      if (guessRows == 1) {
+	    	  scoreAdd = 100;
+	          scoreMultiplierAdd = 0.1;
+	      }
+	      else if (guessRows == 2) {
+	    	  scoreAdd = 200;
+	          scoreMultiplierAdd = 0.2;
+	      }
+	      else {
+	    	  scoreAdd = 300;
+	          scoreMultiplierAdd = 0.3;
+	      }
 	      
 	      // set questionNumberTextView's text
 	      questionNumberTextView.setText(
@@ -149,6 +166,20 @@ public class QuizFragment extends Fragment {
 	      totalGuesses = 0; // reset the total number of guesses the user made
 	      quizCountriesList.clear(); // clear prior list of quiz countries
 	      correctFirstGuesses = 0;
+	      totalScore = 0;
+	      if (guessRows == 1) {
+	    	  scoreAdd = 100;
+	          scoreMultiplierAdd = 0.1;
+	      }
+	      else if (guessRows == 2) {
+	    	  scoreAdd = 200;
+	          scoreMultiplierAdd = 0.2;
+	      }
+	      else {
+	    	  scoreAdd = 300;
+	          scoreMultiplierAdd = 0.3;
+	      }
+	          
 	      
 	      int flagCounter = 1; 
 	      int numberOfFlags = fileNameList.size(); 
@@ -259,6 +290,16 @@ public class QuizFragment extends Fragment {
 	         {
 	        	 if (guessNumber == 1) {
 	        		 correctFirstGuesses += 1;
+	        		 totalScore += scoreAdd;
+	        		 scoreMultiplier += 0.1;
+	        	 }
+	        	 else {
+	        		 if (guessRows == 1)
+	        		 totalScore += scoreAdd - ((guessNumber - 1) * 30);
+	        		 else if (guessRows == 2)
+	        	     totalScore += scoreAdd - ((guessNumber - 1) * 20);
+	        		 else
+	        	     totalScore += scoreAdd - ((guessNumber - 1) * 10);
 	        	 }
 	            ++correctAnswers; // increment the number of correct answers
 
@@ -284,10 +325,13 @@ public class QuizFragment extends Fragment {
 	                           new AlertDialog.Builder(getActivity());
 	                        builder.setCancelable(false); 
 	                        
+	                        totalScore = (int)(totalScore * scoreMultiplier);
+	                        
 	                        builder.setMessage(
 	                           getResources().getString(R.string.results, 
 	                           totalGuesses, (1000 / (double) totalGuesses))
-	                           + "\n" + getResources().getString(R.string.first_guesses, correctFirstGuesses));
+	                           + "\n" + getResources().getString(R.string.first_guesses, correctFirstGuesses)
+	                           + "\n" + getResources().getString(R.string.score_total, totalScore));
 	                        
 	                        // "Reset Quiz" Button                              
 	                        builder.setPositiveButton(R.string.reset_quiz,

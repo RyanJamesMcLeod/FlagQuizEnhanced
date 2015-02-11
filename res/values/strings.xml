@@ -20,6 +20,7 @@
     <string name="reset_quiz">Reset Quiz</string>
     <string name="image_description">Image of current flag in the quiz</string>
     <string name="first_guesses">You guessed %1$d correct on the first guess!</string>
+    <string name="score_total">Your score was %1$d</string>
     <string name="default_region">North_America</string>
 
 </resources>
